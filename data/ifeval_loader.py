@@ -12,7 +12,7 @@ def load_ifeval() -> list[dict]:
         return json.loads(_CACHE_FILE.read_text())
 
     _CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    ds = load_dataset("google/IFEval", split="train", trust_remote_code=True)
+    ds = load_dataset("google/IFEval", split="train")
     samples = []
     for i, row in enumerate(ds):
         samples.append({
