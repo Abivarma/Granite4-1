@@ -1,5 +1,7 @@
 """Ollama inference runner and response parser."""
 
+import json
+
 
 def extract_tool_calls(response) -> list[dict]:
     """Extract tool calls from an Ollama chat response.
@@ -10,10 +12,15 @@ def extract_tool_calls(response) -> list[dict]:
     tool_calls = getattr(response.message, "tool_calls", None)
     if not tool_calls:
         return []
-    return [
-        {
-            "name": tc.function.name,
-            "arguments": tc.function.arguments if isinstance(tc.function.arguments, dict) else {},
-        }
-        for tc in tool_calls
-    ]
+    result = []
+    for tc in tool_calls:
+        args = tc.function.arguments
+        if isinstance(args, str):
+            try:
+                args = json.loads(args)
+            except (json.JSONDecodeError, ValueError):
+                args = {}
+        elif not isinstance(args, dict):
+            args = {}
+        result.append({"name": tc.function.name, "arguments": args})
+    return result

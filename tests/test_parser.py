@@ -38,3 +38,9 @@ def test_empty_tool_calls_list_returns_empty():
     resp = _make_response([])
     result = extract_tool_calls(resp)
     assert result == []
+
+def test_string_arguments_parsed_as_json():
+    resp = _make_response([("get_weather", '{"location": "Boston", "unit": "celsius"}')])
+    result = extract_tool_calls(resp)
+    assert result[0]["arguments"]["location"] == "Boston"
+    assert result[0]["arguments"]["unit"] == "celsius"

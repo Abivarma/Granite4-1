@@ -1,18 +1,22 @@
+"""Data loading and preprocessing utilities for BFCL v3 benchmark."""
+
 from pathlib import Path
 import json
 from huggingface_hub import hf_hub_download
 
-_CACHE_DIR = Path(".cache/bfcl")
+_CACHE_DIR = Path(__file__).parent.parent / ".cache" / "bfcl"
 _CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 _REPO_ID = "gorilla-llm/Berkeley-Function-Calling-Leaderboard"
 
-_FILE_MAP = {
+_CONFIG_MAP = {
     "simple":            "BFCL_v3_simple.json",
     "multiple":          "BFCL_v3_multiple.json",
     "parallel":          "BFCL_v3_parallel.json",
     "parallel_multiple": "BFCL_v3_parallel_multiple.json",
 }
+
+_FILE_MAP = _CONFIG_MAP
 
 _GT_FILE_MAP = {
     "simple":            "possible_answer/BFCL_v3_simple.json",
@@ -40,6 +44,8 @@ def _download_jsonl(filename: str) -> list[dict]:
 
 def load_bfcl_category(category: str) -> list[dict]:
     """Load BFCL v3 prompts for a category. Returns list of {id, question, function}."""
+    if category not in _CONFIG_MAP:
+        raise ValueError(f"Unknown category {category!r}. Valid: {list(_CONFIG_MAP)}")
     cache_file = _CACHE_DIR / f"{category}.json"
     if cache_file.exists():
         return json.loads(cache_file.read_text())
@@ -66,6 +72,8 @@ def load_bfcl_category(category: str) -> list[dict]:
 
 def load_ground_truth(category: str) -> dict[str, list]:
     """Load ground truth for a category. Returns {id: [gt_call, ...]}."""
+    if category not in _CONFIG_MAP:
+        raise ValueError(f"Unknown category {category!r}. Valid: {list(_CONFIG_MAP)}")
     cache_file = _CACHE_DIR / f"{category}_gt.json"
     if cache_file.exists():
         return json.loads(cache_file.read_text())

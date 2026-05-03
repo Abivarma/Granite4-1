@@ -1,3 +1,5 @@
+"""Model configuration and benchmark constants for the Granite 4.1 BFCL benchmark."""
+
 from pathlib import Path
 
 OLLAMA_BASE_URL = "http://localhost:11434"
@@ -19,6 +21,6 @@ BFCL_CATEGORIES = [
     "parallel_multiple",
 ]
 
-RESULTS_DIR = Path("results")
+RESULTS_DIR = Path(__file__).parent / "results"
 TEMPERATURE = 0
 MAX_RETRIES = 1
