@@ -64,7 +64,7 @@ This is a three-phase experiment testing IBM's Granite 4.1 8B against Granite 4.
 
 ## Phase 1 — Tool Calling (BFCL v3)
 
-📓 [Notebook](phase1_tool_calling.ipynb) · 📝 [Full write-up](blog/phase1_blog.md)
+📓 [Notebook](phase1_tool_calling.ipynb) · 📝 Full write-up: *coming soon on Medium*
 
 ### What is tool calling?
 
@@ -83,9 +83,9 @@ When you ask an AI assistant "what's the weather in Boston?", the model doesn't 
 
 ### Results
 
-![Overall accuracy by model — Phase 1](blog/chart1_accuracy_comparison.png)
+![Overall accuracy by model — Phase 1](charts/chart1_accuracy_comparison.png)
 
-![Accuracy heatmap — models vs categories](blog/chart2_heatmap.png)
+![Accuracy heatmap — models vs categories](charts/chart2_heatmap.png)
 
 **Per-category breakdown:**
 
@@ -99,17 +99,17 @@ When you ask an AI assistant "what's the weather in Boston?", the model doesn't 
 
 ### Granite 4.1 vs 4.0 — the generational leap
 
-![Granite 4.1 vs 4.0 improvement per category](blog/chart3_version_delta.png)
+![Granite 4.1 vs 4.0 improvement per category](charts/chart3_version_delta.png)
 
 Granite 4.1 improved over 4.0 in **every single category**. The biggest gain: +12.5 percentage points on Parallel Multiple — the hardest category.
 
 ### Token efficiency
 
-![Token efficiency — average tokens on correct calls](blog/chart4_token_efficiency.png)
+![Token efficiency — average tokens on correct calls](charts/chart4_token_efficiency.png)
 
 ### Capability radar — top 3 models
 
-![Capability radar — top 3 models](blog/chart5_radar.png)
+![Capability radar — top 3 models](charts/chart5_radar.png)
 
 ### A note on IBM's published score
 
@@ -119,7 +119,7 @@ IBM published a BFCL v3 score of **68.27%** for Granite 4.1 8B. Our measurement 
 
 ## Phase 2 — Instruction Following (Google IFEval)
 
-📓 [Notebook](phase2_instruction_following.ipynb) · 📝 [Full write-up](blog/phase2_blog.md)
+📓 [Notebook](phase2_instruction_following.ipynb) · 📝 Full write-up: *coming soon on Medium*
 
 ### What is instruction following?
 
@@ -200,7 +200,7 @@ IBM published **87.06%** instruction-level accuracy for Granite 4.1 8B. Our meas
 |-----------|---------|--------|
 | HumanEval (pass@1) | 164 Python problems | ⏳ In progress |
 
-Same 5 models. Same local hardware. Same approach. Results will appear in `phase3_code_generation.ipynb` and `blog/phase3_blog.md`.
+Same 5 models. Same local hardware. Same approach. Results will appear in `phase3_code_generation.ipynb` and a Medium write-up.
 
 Star or watch this repo to get notified when Phase 3 lands.
 
@@ -273,10 +273,7 @@ Granite4-1/
 ├── analysis/                          # Chart generation and summary reporting
 ├── tests/                             # Unit tests for all modules
 │
-├── blog/                              # Charts and detailed write-ups
-│   ├── phase1_blog.md                 # Full Phase 1 write-up
-│   ├── phase2_blog.md                 # Full Phase 2 write-up
-│   └── chart*.png                     # All Phase 1 charts
+├── charts/                            # Phase 1 result charts (PNG)
 │
 └── results/                           # Summary charts (PNG)
     └── results_ifeval/                # Phase 2 summary chart
