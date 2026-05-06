@@ -5,3 +5,19 @@ __pycache__/
 .ipynb_checkpoints/
 *.egg-info/
 .DS_Store
+**/.DS_Store
+
+# Internal planning documents
+docs/superpowers/
+
+# Raw per-prompt JSON result files (reproduce locally by running the notebooks)
+results/granite4.1_8b/
+results/granite4_latest/
+results/llama3.1_8b/
+results/mistral_7b/
+results/qwen2.5_7b/
+results_ifeval/granite4.1_8b/
+results_ifeval/granite4_latest/
+results_ifeval/llama3.1_8b/
+results_ifeval/mistral_7b/
+results_ifeval/qwen2.5_7b/

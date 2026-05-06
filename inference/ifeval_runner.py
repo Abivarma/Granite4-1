@@ -1,11 +1,13 @@
 """IFEval inference runner — plain text generation, no tool calling."""
 import json
 import time
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
 from pathlib import Path
 import ollama
 from config import TEMPERATURE
 
 _RESULTS_BASE = Path(__file__).parent.parent / "results_ifeval"
+_TIMEOUT_SECONDS = 120  # per-sample wall-clock limit
 
 
 def _result_path(model_tag: str, sample_id: str) -> Path:
@@ -13,6 +15,23 @@ def _result_path(model_tag: str, sample_id: str) -> Path:
     path = _RESULTS_BASE / safe_tag / f"{sample_id}.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     return path
+
+
+def _call_ollama(model_tag: str, prompt: str) -> tuple:
+    """Returns (response_text, prompt_tokens, completion_tokens, latency_ms)."""
+    t0 = time.perf_counter()
+    resp = ollama.chat(
+        model=model_tag,
+        messages=[{"role": "user", "content": prompt}],
+        options={"temperature": TEMPERATURE, "num_predict": 1024},
+    )
+    latency_ms = (time.perf_counter() - t0) * 1000
+    return (
+        resp.message.content or "",
+        resp.prompt_eval_count or 0,
+        resp.eval_count or 0,
+        latency_ms,
+    )
 
 
 def run_ifeval_single(model_tag: str, sample: dict) -> dict:
@@ -35,16 +54,15 @@ def run_ifeval_single(model_tag: str, sample: dict) -> dict:
     }
 
     try:
-        t0 = time.perf_counter()
-        resp = ollama.chat(
-            model=model_tag,
-            messages=[{"role": "user", "content": sample["prompt"]}],
-            options={"temperature": TEMPERATURE},
-        )
-        result["response"] = resp.message.content or ""
-        result["prompt_tokens"] = resp.prompt_eval_count or 0
-        result["completion_tokens"] = resp.eval_count or 0
-        result["latency_ms"] = (time.perf_counter() - t0) * 1000
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            future = pool.submit(_call_ollama, model_tag, sample["prompt"])
+            text, pt, ct, lat = future.result(timeout=_TIMEOUT_SECONDS)
+        result["response"] = text
+        result["prompt_tokens"] = pt
+        result["completion_tokens"] = ct
+        result["latency_ms"] = lat
+    except FuturesTimeoutError:
+        result["error"] = f"timeout after {_TIMEOUT_SECONDS}s"
     except Exception as e:
         result["error"] = str(e)
 

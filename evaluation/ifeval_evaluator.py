@@ -34,7 +34,9 @@ def evaluate_ifeval_response(response: str, instruction_id_list: list, kwargs: l
     for instr_id, kwarg in zip(instruction_id_list, kwargs):
         try:
             verifier_cls = checker[instr_id]
-            verifier = verifier_cls(**kwarg)
+            verifier = verifier_cls(instr_id)
+            filtered = {k: v for k, v in kwarg.items() if v is not None}
+            verifier.build_description(**filtered)
             passed = verifier.check_following(response)
             instruction_results.append(bool(passed))
         except Exception:
